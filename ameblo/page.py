@@ -9,20 +9,23 @@ def get_text_content(url):
     soup = bs4.BeautifulSoup(res.read())
     title = soup.find(attrs={'class': 'skinArticleTitle'})
     article_text = soup.find(attrs={'class': 'articleText'})
-    texts = [ 
-        elem 
-        for elem in article_text.contents 
-        if (isinstance(elem, bs4.element.NavigableString)  
-            and elem.find('google_ad_section_') == -1
-        )
-    ]
+    texts = []
+    if article_text:
+        texts = [ 
+            elem 
+            for elem in article_text.contents 
+            if (isinstance(elem, bs4.element.NavigableString)  
+                and elem.find('google_ad_section_') == -1
+            )
+        ]
 
+    title_text = None 
     if title:
         title_text = title.contents[0].strip()
 
     content = ' '.join([ t.strip() for t in texts ]).strip()
 
-    return { 'title': title_text, 'content': content }
+    return { 'title': title_text, 'content': content } if title_text is not None else None
 
 # get_text_content('http://ameblo.jp/egawata/entry-11590345027.html')
 
